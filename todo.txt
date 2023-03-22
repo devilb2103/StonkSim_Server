@@ -1,0 +1,4 @@
+- ticker existence validation and error handling
+- try getting the currency notation from yfinance
+- error handling while reading csv inside thread.py
+- error handling for everything else that can go wrong
