@@ -2,3 +2,4 @@
 - try getting the currency notation from yfinance
 - error handling while reading csv inside thread.py
 - error handling for everything else that can go wrong
+- clear tickers when user disconnects like when they remove tickers indivisually

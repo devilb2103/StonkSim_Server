@@ -7,7 +7,7 @@ def getTickerInfo(ticker):
     # ^^^ gets data of a listed stock from the past day, intervals = 1 minute ^^^
     
     # symbol = yf.Ticker(str(ticker).upper()).fast_info['currency']
-    # print(symbol)
+    # print(query)
     data = [
         # symbol,
         round(query['Close'][-1], 2), # current price

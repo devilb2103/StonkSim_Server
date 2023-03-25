@@ -1,6 +1,6 @@
 import yfinance as yf
 while True:
-    for x in ['ADANIENT.NS']:
+    for x in ['tsla']:
         query = yf.Ticker(str(x).upper()).history(interval='1m', period='1d')
         # symbol = yf.Ticker(str(x).upper()).info()['currency']
         data = [
