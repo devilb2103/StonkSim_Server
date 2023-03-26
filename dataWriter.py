@@ -12,6 +12,7 @@ async def addUser(sio, sid):
 async def removeUser(sio, sid):
     userData.pop(sid)
     cleanTickerList(userData, tickerData)
+    writeToCSV(tickerData)
     print(sid, "disconnected")
 
 def addTicker(sid, ticker):
