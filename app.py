@@ -1,8 +1,9 @@
+from threading import Thread
 from aiohttp import web
-import subprocess
+import socketio
 from dataEmmiter import emitStockData
 from dataWriter import addTicker, addUser, removeTicker, removeUser
-import socketio
+from thread import thread
 
 sio = socketio.AsyncServer()
 app = web.Application()
@@ -36,9 +37,10 @@ def remTicker(sid, message):
 
 async def init_app(): # app start wrapper that also launches emitStockData as a subprocess
     sio.start_background_task(emitStockData, sio)
+    Thread(target=thread).start()
     return app
 
-threadProc = subprocess.Popen(["Python", "thread.py"])
+# threadProc = subprocess.Popen(["Python", "thread.py"])
 
 if __name__ == '__main__':
     web.run_app(init_app())
