@@ -7,6 +7,7 @@ userData = {} #{user1:[ticker1, ticker2..., tickerN], user2:[ticker1, ticker2...
 async def addUser(sio, sid):
     if(sid not in userData.keys()):
         userData[sid] = []
+    # await sio.emit(event="id", data=sid, room=str(sid))
     print(sid, "connected")
 
 async def removeUser(sio, sid):
