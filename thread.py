@@ -53,5 +53,5 @@ def thread():
                 finalTickers[x] = ["NA"]*4
 
         writeToCSV(finalTickers) # write updated data to data.csv
-        print("update cycle completed") # debug
+        # print("update cycle completed") # debug
         sleep(1) # because yfinance api is rate limited (i think / hota h / chalta h / safe rehna h)
