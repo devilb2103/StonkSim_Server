@@ -3,18 +3,26 @@ import yfinance as yf
 import csv
 
 def getTickerInfo(ticker):
-    query = yf.Ticker(str(ticker).upper()).history(interval='1m', period='1d') 
+    try:
+        query = yf.Ticker(str(ticker).upper()).history(interval='1m', period='1d') 
+    except:
+        pass
     # ^^^ gets data of a listed stock from the past day, intervals = 1 minute ^^^
     
     # symbol = yf.Ticker(str(ticker).upper()).fast_info['currency']
     # print(query)
-    data = [
-        # symbol,
-        round(query['Close'][-1], 2), # current price
-        round((query['Close'][-1] - query['Close'][-2]), 2), # price change
-        round(((query['Close'][-1] - query['Close'][-2])/query['Close'][-2])*100, 2), # price change %
-        query['Volume'][-1], # volume
-    ]
+    data = None
+    try:
+        data = [
+            # symbol,
+            round(query['Close'][-1], 2), # current price   
+            round((query['Close'][-1] - query['Close'][-2]), 2), # price change
+            round(((query['Close'][-1] - query['Close'][-2])/query['Close'][-2])*100, 2), # price change %
+            query['Volume'][-1], # volume
+        ]
+    except:
+        data = None
+    # print(data)
     return data
 
 def loadCSV():
@@ -38,7 +46,9 @@ def thread():
     while True: # main thread program
         tickers = loadCSV() # first ticker load -----> 1
         for x in tickers.keys():
-            tickers[x] = getTickerInfo(str(x)) # write data to each corresponding ticker in the array
+            fetchedData = getTickerInfo(str(x))
+            if(fetchedData != None):
+                tickers[x] = fetchedData # write data to each corresponding ticker in the array
         updatedTickers = loadCSV() # get ticker data updated AFTER tickers were loaded (Second ticker load -----> 2)
         finalTickers = {} # returned ticker list (final) thats to be written to csv
         # account for added / removed tickers
@@ -51,6 +61,7 @@ def thread():
         for x in updatedTickers.keys(): # initialize tickers which were added newly in the second ticker load (2)
             if(x not in tickers.keys()):
                 finalTickers[x] = ["NA"]*4
+                
 
         writeToCSV(finalTickers) # write updated data to data.csv
         # print("update cycle completed") # debug
