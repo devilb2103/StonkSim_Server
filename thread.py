@@ -4,16 +4,18 @@ import csv
 import pandas as pd
 
 def getTickerInfo(ticker):
+    # query = None
+    # prevClose = None
     try:
         data = yf.Ticker(str(ticker).upper())
         query = data.history(interval='1m', period='1d')
         prevClose = data.fast_info["previousClose"]
-        print(query['Volume'][-1])
+        
     except:
         pass
     # ^^^ gets data of a listed stock from the past day, intervals = 1 minute ^^^
-    if(type(prevClose) != float()):
-        prevClose = query['Open'][-1]
+    if(type(prevClose) != float):
+        prevClose = query['Close'][-2]
     # symbol = yf.Ticker(str(ticker).upper()).fast_info['currency']
     # print(query)
     data = None
@@ -21,13 +23,12 @@ def getTickerInfo(ticker):
         data = [
             # symbol,
             round(query['Close'][-1], 2), # current price   
-            round((query['Close'][-1] - prevClose), 2), # price change
+            round(query['Close'][-1] - prevClose, 2), # price change
             round(((query['Close'][-1] - prevClose)/prevClose)*100, 2), # price change %
             query['Volume'][-1], # volume
         ]
     except:
         data = None
-    # print(data)
     return data
 
 def loadCSV():
