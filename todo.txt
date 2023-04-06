@@ -1,5 +1,5 @@
-- ticker existence validation and error handling
+- all tickers are set to NA and emitted at some point which is bad
+- check if data for a ticker recieved is emoty data frame. if yes, then reject it
 - try getting the currency notation from yfinance
 - error handling while reading csv inside thread.py
 - error handling for everything else that can go wrong
-- clear tickers when user disconnects like when they remove tickers indivisually

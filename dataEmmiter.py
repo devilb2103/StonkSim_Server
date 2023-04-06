@@ -9,10 +9,17 @@ async def emitStockData(sio): # emits data for each client indivisually
         tickerData = loadCSV()
         for x in userData.keys():
             streamData = {}
+
+            # for each ticker for a specific user
             for ticker in userData[x]:
-                streamData[ticker] = tickerData[ticker]
+                # get data for that ticker
+                data = tickerData[ticker]
+                if("NA" not in data): #check if ticker has no data, only then add it to stream data that is to be emitted
+                    streamData[ticker] = data
+
+            # check if data is repeating, ont send it if it is to avoid unnecesarry bandwidth usage
             if((x not in tempStreamData.keys()) or 
-               (x in tempStreamData.keys() and tempStreamData[x] != streamData)):
+               (x in tempStreamData.keys() and tempStreamData[x] != streamData)): 
                 tempStreamData[x] = streamData
                 await sio.emit("tickerStream", streamData, room=str(x)) # emit streamdata to user with id "x"
                 await sio.sleep(0.3) #sleep for 0.3 sec between indivisual user emit
