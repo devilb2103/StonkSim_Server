@@ -1,14 +1,19 @@
 from time import sleep
 import yfinance as yf
 import csv
+import pandas as pd
 
 def getTickerInfo(ticker):
     try:
-        query = yf.Ticker(str(ticker).upper()).history(interval='1m', period='1d') 
+        data = yf.Ticker(str(ticker).upper())
+        query = data.history(interval='1m', period='1d')
+        prevClose = data.fast_info["previousClose"]
+        print(query['Volume'][-1])
     except:
         pass
     # ^^^ gets data of a listed stock from the past day, intervals = 1 minute ^^^
-    
+    if(type(prevClose) != float()):
+        prevClose = query['Open'][-1]
     # symbol = yf.Ticker(str(ticker).upper()).fast_info['currency']
     # print(query)
     data = None
@@ -16,8 +21,8 @@ def getTickerInfo(ticker):
         data = [
             # symbol,
             round(query['Close'][-1], 2), # current price   
-            round((query['Close'][-1] - query['Close'][-2]), 2), # price change
-            round(((query['Close'][-1] - query['Close'][-2])/query['Close'][-2])*100, 2), # price change %
+            round((query['Close'][-1] - prevClose), 2), # price change
+            round(((query['Close'][-1] - prevClose)/prevClose)*100, 2), # price change %
             query['Volume'][-1], # volume
         ]
     except:
