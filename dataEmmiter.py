@@ -5,29 +5,32 @@ tempStreamData = {}
 
 async def emitStockData(sio): # emits data for each client indivisually
     while True:
-        userData = getUserData()[0]
-        tickerData = loadCSV()
-        userDataKeys = userData.keys()
-        for x in userDataKeys:
-            streamData = {}
+        try:
+            userData = getUserData()[0]
+            tickerData = loadCSV()
+            userDataKeys = userData.keys()
+            for x in userDataKeys:  
+                streamData = {}
 
-            # for each ticker for a specific user
-            for ticker in userData[x]:
-                # get data for that ticker
-                if(ticker in tickerData):
-                    data = tickerData[ticker]
-                    if("NA" not in data): #check if ticker has no data, only then add it to stream data that is to be emitted
-                        streamData[ticker] = data
+                # for each ticker for a specific user
+                for ticker in userData[x]:
+                    # get data for that ticker
+                    if(ticker in tickerData):
+                        data = tickerData[ticker]
+                        if("NA" not in data): #check if ticker has no data, only then add it to stream data that is to be emitted
+                            streamData[ticker] = data
 
-            # check if data is repeating, ont send it if it is to avoid unnecesarry bandwidth usage
-            if((x not in tempStreamData.keys()) or 
-               (x in tempStreamData.keys() and tempStreamData[x] != streamData)) and (len(streamData.keys()) != 0): 
-                tempStreamData[x] = streamData
-                await sio.emit("tickerStream", streamData, room=str(x)) # emit streamdata to user with id "x"
-                await sio.sleep(0.3) #sleep for 0.3 sec between indivisual user emit
-            else:
-                print("recurring data")
-        await sio.sleep(3) # sleep for 3 sec between all user emit loop
+                # check if data is repeating, ont send it if it is to avoid unnecesarry bandwidth usage
+                if((x not in tempStreamData.keys()) or 
+                (x in tempStreamData.keys() and tempStreamData[x] != streamData)) and (len(streamData.keys()) != 0): 
+                    tempStreamData[x] = streamData
+                    await sio.emit("tickerStream", streamData, room=str(x)) # emit streamdata to user with id "x"
+                    await sio.sleep(0.3) #sleep for 0.3 sec between indivisual user emit
+                else:
+                    print("recurring data")
+            await sio.sleep(3) # sleep for 3 sec between all user emit loop
+        except Exception as e:
+            print(e)
 
 # async def emitStockData(sio): # emits data for each ticker indivisually 
 #     # (more efficient in terms of server load and update rate)
