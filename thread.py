@@ -31,12 +31,13 @@ def getTickerInfo(ticker):
             round(((query['Close'][-1] - prevClose)/prevClose)*100, 2), # price change %
             round(query['Open'][0], 2), # opening price
             round(query['Close'][0], 2), # Previous Closing Price
-            round(query['Volume'][-1], 2), # Volume
+            query['Volume'][-2], # Volume
             f"{round(query['Low'][0], 2)} - {round(query['High'][0], 2)}" # Daily Range
         ]
     except Exception as e:
         print(e)
         data = None
+    print(data[5])
     return data
 
 def loadCSV():
