@@ -1,4 +1,6 @@
 from time import sleep
+from numpy import int64
+import pandas as pd
 import yfinance as yf
 import csv
 
@@ -7,9 +9,15 @@ toDelist = {}
 def getTickerInfo(ticker):
     query = None
     prevClose = None
+    graphData = []
     try:
         data = yf.Ticker(str(ticker).upper())
         query = data.history(interval='1m', period='1d')
+        
+        timestamps = list(pd.to_datetime(query.index).astype(int64) // 10**9)
+        prices = list(pd.DataFrame(query)["Open"])
+        graphData = [timestamps, prices]
+        
         prevClose = data.fast_info["previousClose"]
         # ^^^ gets data of a listed stock from the past day, intervals = 1 minute ^^^
         if(type(prevClose) != float):
@@ -26,13 +34,14 @@ def getTickerInfo(ticker):
     try:
         data = [
             # symbol,
-            round(query['Close'][-1], 2), # current price   
+            round(query['Close'][-1], 2), # current price
             round(query['Close'][-1] - prevClose, 2), # price change
             round(((query['Close'][-1] - prevClose)/prevClose)*100, 2), # price change %
             round(query['Open'][0], 2), # opening price
             round(query['Close'][0], 2), # Previous Closing Price
             round(query['Volume'][-2], 2), # Volume
-            f"{round(query['Low'][0], 2)} - {round(query['High'][0], 2)}" # Daily Range
+            f"{round(query['Low'][0], 2)} - {round(query['High'][0], 2)}", # Daily Range,
+            graphData
         ]
     except Exception as e:
         print(e)
@@ -77,5 +86,6 @@ def thread():
                 finalTickers[x] = ["NA"]*4
 
         writeToCSV(finalTickers) # write updated data to data.csv
+        toDelist.clear()
         # print("update cycle completed") # debug
         sleep(1) # because yfinance api is rate limited (i think / hota h / chalta h / safe rehna h)
