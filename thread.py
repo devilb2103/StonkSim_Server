@@ -11,8 +11,9 @@ def getTickerInfo(ticker):
         query = data.history(interval='1m', period='1d')
         prevClose = data.fast_info["previousClose"]
         
-    except:
-        pass
+    except Exception as e:
+        print(e)
+
     # ^^^ gets data of a listed stock from the past day, intervals = 1 minute ^^^
     if(type(prevClose) != float):
         prevClose = query['Close'][-2]
@@ -27,7 +28,8 @@ def getTickerInfo(ticker):
             round(((query['Close'][-1] - prevClose)/prevClose)*100, 2), # price change %
             query['Volume'][-1], # volume
         ]
-    except:
+    except Exception as e:
+        print(e)
         data = None
     return data
 

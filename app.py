@@ -43,5 +43,6 @@ async def init_app(): # app start wrapper that also launches emitStockData as a 
 # threadProc = subprocess.Popen(["Python", "thread.py"])
 
 if __name__ == '__main__':
+    print("server started")
     web.run_app(init_app())
     
