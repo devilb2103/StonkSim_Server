@@ -20,7 +20,7 @@ async def emitStockData(sio): # emits data for each client indivisually
 
             # check if data is repeating, ont send it if it is to avoid unnecesarry bandwidth usage
             if((x not in tempStreamData.keys()) or 
-               (x in tempStreamData.keys() and tempStreamData[x] != streamData)): 
+               (x in tempStreamData.keys() and tempStreamData[x] != streamData)) and (len(streamData.keys()) != 0): 
                 tempStreamData[x] = streamData
                 await sio.emit("tickerStream", streamData, room=str(x)) # emit streamdata to user with id "x"
                 await sio.sleep(0.3) #sleep for 0.3 sec between indivisual user emit
