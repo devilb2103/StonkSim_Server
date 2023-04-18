@@ -7,7 +7,8 @@ async def emitStockData(sio): # emits data for each client indivisually
     while True:
         userData = getUserData()[0]
         tickerData = loadCSV()
-        for x in userData.keys():
+        userDataKeys = userData.keys()
+        for x in userDataKeys:
             streamData = {}
 
             # for each ticker for a specific user
