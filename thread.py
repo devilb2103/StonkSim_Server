@@ -10,16 +10,20 @@ def getTickerInfo(ticker):
     query = None
     prevClose = None
     graphData = []
+    companyName = ""
     try:
         data = yf.Ticker(str(ticker).upper())
         query = data.history(interval='1m', period='1d')
+        # ^^^ gets data of a listed stock from the past day, intervals = 1 minute ^^^
         
         timestamps = list(pd.to_datetime(query.index).view(int64) // 10**9)
         prices = list(pd.DataFrame(query)["Open"])
         graphData = [timestamps, prices]
         
-        prevClose = data.fast_info["previousClose"]
-        # ^^^ gets data of a listed stock from the past day, intervals = 1 minute ^^^
+        info = data.info
+        companyName = info["longName"]
+        prevClose = info["previousClose"]
+        
         if(type(prevClose) != float):
             prevClose = query['Close'][-2]
         
@@ -41,7 +45,8 @@ def getTickerInfo(ticker):
             round(query['Close'][0], 2), # Previous Closing Price
             round(query['Volume'][-2], 2), # Volume
             f"{round(query['Low'][0], 2)} - {round(query['High'][0], 2)}", # Daily Range,
-            graphData
+            graphData,
+            companyName
         ]
     except Exception as e:
         print(e)
